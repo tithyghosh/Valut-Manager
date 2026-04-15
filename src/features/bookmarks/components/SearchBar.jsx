@@ -1,27 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-
-const sortChoices = [
-  {
-    value: "date-desc",
-    label: "Date: Newest First",
-    hint: "Recently added cards appear first",
-  },
-  {
-    value: "date-asc",
-    label: "Date: Oldest First",
-    hint: "Earlier saved cards appear first",
-  },
-  {
-    value: "name-asc",
-    label: "Name: A to Z",
-    hint: "Alphabetical ascending order",
-  },
-  {
-    value: "name-desc",
-    label: "Name: Z to A",
-    hint: "Alphabetical descending order",
-  },
-];
+import React, { useEffect, useRef, useState } from 'react'
+import { sortChoices } from '../utils/bookmarkQuery'
 
 const SearchBar = ({
   searchTerm,
@@ -29,10 +7,10 @@ const SearchBar = ({
   sortOrder,
   onSortChange,
 }) => {
-  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-  const sortMenuRef = useRef(null);
+  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
+  const sortMenuRef = useRef(null)
   const activeSort =
-    sortChoices.find((choice) => choice.value === sortOrder) || sortChoices[0];
+    sortChoices.find((choice) => choice.value === sortOrder) || sortChoices[0]
 
   useEffect(() => {
     const handlePointerDown = (event) => {
@@ -40,16 +18,16 @@ const SearchBar = ({
         sortMenuRef.current &&
         !sortMenuRef.current.contains(event.target)
       ) {
-        setIsSortMenuOpen(false);
+        setIsSortMenuOpen(false)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener('mousedown', handlePointerDown)
 
     return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-    };
-  }, []);
+      document.removeEventListener('mousedown', handlePointerDown)
+    }
+  }, [])
 
   return (
     <div className="flex flex-col gap-4">
@@ -102,13 +80,13 @@ const SearchBar = ({
             </svg>
             Sort by
             <span className="rounded-full bg-neutral-800 px-2 py-1 text-[10px] tracking-[0.2em] text-neutral-400">
-              {activeSort.value === "date-desc" && "Newest"}
-              {activeSort.value === "date-asc" && "Oldest"}
-              {activeSort.value === "name-asc" && "A-Z"}
-              {activeSort.value === "name-desc" && "Z-A"}
+              {activeSort.value === 'date-desc' && 'Newest'}
+              {activeSort.value === 'date-asc' && 'Oldest'}
+              {activeSort.value === 'name-asc' && 'A-Z'}
+              {activeSort.value === 'name-desc' && 'Z-A'}
             </span>
             <svg
-              className={`h-4 w-4 transition ${isSortMenuOpen ? "rotate-180" : ""}`}
+              className={`h-4 w-4 transition ${isSortMenuOpen ? 'rotate-180' : ''}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -137,13 +115,13 @@ const SearchBar = ({
                       key={choice.value}
                       type="button"
                       onClick={() => {
-                        onSortChange(choice.value);
-                        setIsSortMenuOpen(false);
+                        onSortChange(choice.value)
+                        setIsSortMenuOpen(false)
                       }}
                       className={`flex w-full items-start justify-between rounded-2xl border px-4 py-3 text-left transition ${
                         isActive
-                          ? "border-blue-500/70 bg-blue-500/10 text-white"
-                          : "border-neutral-800 bg-neutral-900/70 text-neutral-300 hover:border-blue-500/40 hover:text-white"
+                          ? 'border-blue-500/70 bg-blue-500/10 text-white'
+                          : 'border-neutral-800 bg-neutral-900/70 text-neutral-300 hover:border-blue-500/40 hover:text-white'
                       }`}
                     >
                       <span className="text-sm font-semibold">{choice.label}</span>
@@ -163,7 +141,7 @@ const SearchBar = ({
         Find cards instantly by website name or URL. Sorted by {activeSort.label}
       </p>
     </div>
-  );
-};
+  )
+}
 
-export default SearchBar;
+export default SearchBar

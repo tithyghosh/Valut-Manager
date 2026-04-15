@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import Header from './Components/Header'
-import Form from './Components/Form'
-import MainBoard from './Components/MainBoard'
+import Header from './features/header/Header'
+import Form from './features/bookmarks/components/Form'
+import MainBoard from './features/bookmarks/components/MainBoard'
 
 const App = () => {
   const [bookmarks, setBookmarks] = useState([])

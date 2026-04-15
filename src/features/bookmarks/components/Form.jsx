@@ -1,51 +1,32 @@
-import React, { useState } from "react";
-
-const categories = [
-  "Social",
-  "Video",
-  "Design",
-  "Streaming",
-  "Productivity",
-  "Entertainment",
-  "Shopping",
-  "Music",
-];
-
-const initialFormData = {
-  name: "",
-  website: "",
-  color: "#3b82f6",
-  category: "",
-  username: "",
-  password: "",
-};
+import React, { useState } from 'react'
+import { categories, initialFormData } from '../utils/bookmarkForm'
 
 const Form = ({ onAddBookmark }) => {
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(initialFormData)
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
 
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const resetForm = () => {
-    setFormData(initialFormData);
-  };
+    setFormData(initialFormData)
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    onAddBookmark(formData);
-    resetForm();
-  };
+    onAddBookmark(formData)
+    resetForm()
+  }
 
   const handleClear = () => {
-    resetForm();
-  };
+    resetForm()
+  }
 
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4">
@@ -216,6 +197,7 @@ const Form = ({ onAddBookmark }) => {
         </div>
       </form>
     </div>
-  );
-};
-export default Form;
+  )
+}
+
+export default Form

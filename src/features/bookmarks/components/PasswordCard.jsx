@@ -1,29 +1,5 @@
 import React, { useState } from 'react'
-
-const getWebsiteLabel = (website) => {
-  if (!website) {
-    return 'Untitled'
-  }
-
-  return website
-    .replace(/^https?:\/\//, '')
-    .replace(/^www\./, '')
-    .split('/')[0]
-}
-
-const getCardTitle = (item) => {
-  if (item.name?.trim()) {
-    return item.name.trim()
-  }
-
-  return getWebsiteLabel(item.website)
-}
-const getCardInitials = (item) => {
-  return getCardTitle(item).slice(0, 2).toUpperCase()
-}
-const getPasswordMask = (password) => {
-  return '•'.repeat(password?.length || 8)
-}
+import { getCardInitials, getCardTitle, getPasswordMask } from '../utils/bookmarkDisplay'
 
 const PasswordCard = ({ bookmarks, hasBookmarks, searchTerm }) => {
   const [revealedIds, setRevealedIds] = useState([])
@@ -132,8 +108,7 @@ const PasswordCard = ({ bookmarks, hasBookmarks, searchTerm }) => {
           </article>
         )
       })}
-       </div>
-    
+    </div>
   )
 }
 
