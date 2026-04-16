@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { sortChoices } from '../utils/bookmarkQuery'
+import { categories } from '../utils/bookmarkForm'
 
 const SearchBar = ({
   searchTerm,
   onSearchChange,
+  categoryFilter,
+  onCategoryChange,
   sortOrder,
   onSortChange,
 }) => {
@@ -137,8 +140,36 @@ const SearchBar = ({
         </div>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => onCategoryChange('')}
+          className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition ${
+            categoryFilter === ''
+              ? 'border-blue-600 bg-blue-600 text-white'
+              : 'border-neutral-700 text-neutral-400 hover:border-neutral-500 hover:text-white'
+          }`}
+        >
+          All
+        </button>
+        {categories.map((category) => (
+          <button
+            key={category}
+            type="button"
+            onClick={() => onCategoryChange(category === categoryFilter ? '' : category)}
+            className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition ${
+              categoryFilter === category
+                ? 'border-blue-600 bg-blue-600 text-white'
+                : 'border-neutral-700 text-neutral-400 hover:border-neutral-500 hover:text-white'
+            }`}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
-        Find cards instantly by website name or URL. Sorted by {activeSort.label}
+        Find cards instantly by website name, URL, or category. Sorted by {activeSort.label}
       </p>
     </div>
   )

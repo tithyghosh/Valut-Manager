@@ -21,6 +21,9 @@ export const getCardInitials = (item) => {
   return getCardTitle(item).slice(0, 2).toUpperCase()
 }
 
-export const getPasswordMask = (password) => {
-  return '•'.repeat(password?.length || 8)
+export const getPasswordMask = (passwordLength) => {
+  const length =
+    typeof passwordLength === 'number' ? passwordLength : passwordLength?.length
+
+  return '•'.repeat(length || 8)
 }

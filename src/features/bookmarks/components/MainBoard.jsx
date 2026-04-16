@@ -3,10 +3,11 @@ import PasswordCard from './PasswordCard'
 import SearchBar from './SearchBar'
 import { DEFAULT_SORT_ORDER, filterBookmarks, sortBookmarks } from '../utils/bookmarkQuery'
 
-const MainBoard = ({ bookmarks }) => {
+const MainBoard = ({ bookmarks, onDelete, onEdit, onRevealPassword }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortOrder, setSortOrder] = useState(DEFAULT_SORT_ORDER)
-  const filteredBookmarks = filterBookmarks(bookmarks, searchTerm)
+  const [categoryFilter, setCategoryFilter] = useState('')
+  const filteredBookmarks = filterBookmarks(bookmarks, searchTerm, categoryFilter)
   const sortedBookmarks = sortBookmarks(filteredBookmarks, sortOrder)
 
   return (
@@ -16,6 +17,8 @@ const MainBoard = ({ bookmarks }) => {
           <SearchBar
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
+            categoryFilter={categoryFilter}
+            onCategoryChange={setCategoryFilter}
             sortOrder={sortOrder}
             onSortChange={setSortOrder}
           />
@@ -24,6 +27,9 @@ const MainBoard = ({ bookmarks }) => {
           bookmarks={sortedBookmarks}
           hasBookmarks={bookmarks.length > 0}
           searchTerm={searchTerm}
+          onDelete={onDelete}
+          onEdit={onEdit}
+          onRevealPassword={onRevealPassword}
         />
       </div>
     </main>

@@ -3,7 +3,7 @@ import { categories, initialFormData } from '../utils/bookmarkForm'
 
 const Form = ({ onAddBookmark }) => {
   const [formData, setFormData] = useState(initialFormData)
-
+  const [errors, setErrors] = useState({})
   const handleChange = (e) => {
     const { name, value } = e.target
 
@@ -16,10 +16,30 @@ const Form = ({ onAddBookmark }) => {
   const resetForm = () => {
     setFormData(initialFormData)
   }
-
+  const validate = () => {
+    const newErrors = {}
+    if (!formData.name.trim() && !formData.website.trim()){
+      newErrors.name = 'Enter at least a name or url';
+    }
+    if (!formData.username.trim()){
+      newErrors.username = 'Username is required';
+    } 
+    if (!formData.password.trim()){
+      newErrors.password = 'Password is required'
+    } 
+    else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
+    }
+    return newErrors
+  }
   const handleSubmit = (e) => {
     e.preventDefault()
-
+    const foundErrors = validate () 
+    if(Object.keys(foundErrors).length > 0){
+      setErrors(foundErrors);
+      return
+    }
+    setErrors({})
     onAddBookmark(formData)
     resetForm()
   }
@@ -61,9 +81,9 @@ const Form = ({ onAddBookmark }) => {
                 placeholder="Facebook"
                 className="w-full bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none"
               />
-              <span className="text-xs text-neutral-500">
-                Search result-এ এই নাম দেখানো হবে।
-              </span>
+            {errors.name || (
+              <span className='text-xs text-red-600'>{errors.name}</span>
+            )}
             </label>
 
             <label className="flex flex-col gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
@@ -81,6 +101,9 @@ const Form = ({ onAddBookmark }) => {
               <span className="text-xs text-neutral-500">
                 Include https:// for best results.
               </span>
+              {errors.website && (
+              <span className='text-xs text-red-600'>{errors.name}</span>
+            )}
             </label>
 
             <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
@@ -154,6 +177,9 @@ const Form = ({ onAddBookmark }) => {
               <span className="text-xs text-neutral-500">
                 Use workspace or personal handle.
               </span>
+              {errors.username && (
+              <span className='text-xs text-red-600'>{errors.username}</span>
+            )}
             </label>
 
             <label className="flex flex-col gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
@@ -171,6 +197,9 @@ const Form = ({ onAddBookmark }) => {
               <span className="text-xs text-neutral-500">
                 Choose at least 6 characters.
               </span>
+              {errors.password && (
+              <span className='text-xs text-red-600'>{errors.password}</span>
+            )}
             </label>
           </div>
         </div>
@@ -200,4 +229,4 @@ const Form = ({ onAddBookmark }) => {
   )
 }
 
-export default Form
+export default Form;

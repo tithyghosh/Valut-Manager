@@ -44,21 +44,22 @@ const sortOptions = {
     ),
 }
 
-export const filterBookmarks = (bookmarks, searchTerm) => {
+export const filterBookmarks = (bookmarks, searchTerm, categoryFilter) => {
   const normalizedSearchTerm = searchTerm.trim().toLowerCase()
-
-  if (!normalizedSearchTerm) {
-    return bookmarks
-  }
 
   return bookmarks.filter((item) => {
     const name = item.name?.toLowerCase() || ''
     const url = item.website?.toLowerCase() || ''
 
-    return (
+    const matchesSearch =
+      !normalizedSearchTerm ||
       name.includes(normalizedSearchTerm) ||
       url.includes(normalizedSearchTerm)
-    )
+
+    const matchesCategory =
+      !categoryFilter || item.category === categoryFilter
+
+    return matchesSearch && matchesCategory
   })
 }
 
