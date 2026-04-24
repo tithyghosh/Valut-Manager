@@ -13,8 +13,8 @@ const MainBoard = ({ bookmarks, onDelete, onEdit, onRevealPassword, onRevealNote
   const sortedBookmarks = sortBookmarks(filteredBookmarks, sortOrder)
 
   return (
-    <main className="p-8">
-      <div className="max-w-7xl mx-auto space-y-6 px-4">
+    <main className="p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6 px-0 sm:px-4">
         <section
           className="rounded-3xl p-6"
           style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}

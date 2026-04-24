@@ -38,7 +38,7 @@ export const BackupManager = ({ bookmarks, onImport, onToast }) => {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       <button
         onClick={handleExport}
         className="flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-semibold transition-all hover:scale-105"

@@ -39,7 +39,7 @@ const Header = ({ bookmarks = [], onLock, onToast }) => {
         style={{ background: 'linear-gradient(90deg, transparent 0%, var(--teal) 30%, var(--blue) 70%, transparent 100%)' }}
       />
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
           {/* Left — greeting + date */}
@@ -54,7 +54,7 @@ const Header = ({ bookmarks = [], onLock, onToast }) => {
               <span className="h-px flex-1 max-w-[60px]" style={{ background: 'var(--teal)', opacity: 0.4 }} />
             </div>
 
-            <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight leading-none">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-none">
               {getGreeting(now)},
               <span className="text-shimmer ml-2">World!</span>
             </h1>
@@ -67,32 +67,32 @@ const Header = ({ bookmarks = [], onLock, onToast }) => {
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 {formatDate(now)}
               </span>
-              <span className="text-xs" style={{ color: 'var(--muted)' }}>
+              <span className="hidden sm:inline text-xs" style={{ color: 'var(--muted)' }}>
                 All credentials encrypted locally
               </span>
             </div>
           </div>
 
           {/* Right — stat pills + lock button */}
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <StatPill label="Credentials" value={bookmarks.length} delay="delay-100" />
             <StatPill label="Categories"  value={categories}        delay="delay-200" />
             <StatPill label="Last Added"  value={newest}            delay="delay-300" />
 
             <button
               onClick={() => setShowChangePwd(true)}
-              className="animate-fade-up delay-400 flex items-center gap-2 px-4 py-3 rounded-2xl text-xs font-semibold transition-all duration-200 hover:scale-105"
+              className="animate-fade-up delay-400 flex items-center gap-2 px-3 sm:px-4 py-3 rounded-2xl text-xs font-semibold transition-all duration-200 hover:scale-105"
               style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--muted)' }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--teal)'; e.currentTarget.style.color = 'var(--teal)' }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--muted)' }}
             >
-              🔑 Password
+              🔑 <span className="hidden sm:inline">Password</span>
             </button>
 
             {onLock && (
               <button
                 onClick={onLock}
-                className="animate-fade-up delay-400 flex items-center gap-2 px-4 py-3 rounded-2xl text-xs font-semibold transition-all duration-200 hover:scale-105"
+                className="animate-fade-up delay-400 flex items-center gap-2 px-3 sm:px-4 py-3 rounded-2xl text-xs font-semibold transition-all duration-200 hover:scale-105"
                 style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--muted)' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#ff4d6a50'
@@ -106,7 +106,7 @@ const Header = ({ bookmarks = [], onLock, onToast }) => {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                 </svg>
-                Lock Vault
+                <span className="hidden sm:inline">Lock Vault</span>
               </button>
             )}
           </div>

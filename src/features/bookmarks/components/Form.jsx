@@ -52,10 +52,10 @@ const Form = ({ onAddBookmark }) => {
   const strength = getPasswordStrength(formData.password)
 
   return (
-    <div className="max-w-7xl mx-auto mt-8 px-4 sm:px-6 animate-fade-up delay-200">
+    <div className="max-w-7xl mx-auto mt-6 sm:mt-8 px-4 sm:px-6 animate-fade-up delay-200">
       <form
         onSubmit={handleSubmit}
-        className="rounded-3xl p-8 shadow-2xl"
+        className="rounded-3xl p-5 sm:p-8 shadow-2xl"
         style={{
           background: 'linear-gradient(135deg, #0e0f1a 0%, #0a0b14 100%)',
           border: '1px solid var(--border)',
@@ -63,11 +63,11 @@ const Form = ({ onAddBookmark }) => {
         }}
       >
         {/* Heading */}
-        <div className="mb-8 pl-5 accent-line">
+        <div className="mb-6 sm:mb-8 pl-5 accent-line">
           <p className="text-[10px] font-semibold uppercase tracking-[0.35em] mb-2" style={{ color: 'var(--teal)' }}>
             New Entry
           </p>
-          <h2 className="text-2xl font-bold">Store credentials securely</h2>
+          <h2 className="text-xl sm:text-2xl font-bold">Store credentials securely</h2>
           <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
             Everything is encrypted with AES-256 before saving.
           </p>
@@ -189,7 +189,7 @@ const Form = ({ onAddBookmark }) => {
         </div>
 
         {/* Row 3 — notes (full width) */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <Field
             label={<>Notes <span style={{ color: 'var(--border-bright)' }}>(optional)</span></>}
             hint="Stored encrypted alongside your credentials."

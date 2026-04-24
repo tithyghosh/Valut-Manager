@@ -124,7 +124,7 @@ const PasswordCard = ({
   }
 
   if (!hasBookmarks) return (
-    <div className="rounded-3xl p-16 text-center animate-fade-up"
+    <div className="rounded-3xl p-8 sm:p-16 text-center animate-fade-up"
       style={{ background: 'var(--surface)', border: '1px dashed var(--border)' }}>
       <div className="text-5xl mb-4">🔐</div>
       <p className="text-lg font-semibold mb-2">No credentials saved yet</p>
@@ -133,7 +133,7 @@ const PasswordCard = ({
   )
 
   if (searchTerm.trim() && bookmarks.length === 0) return (
-    <div className="rounded-3xl p-16 text-center animate-fade-up"
+    <div className="rounded-3xl p-8 sm:p-16 text-center animate-fade-up"
       style={{ background: 'var(--surface)', border: '1px dashed var(--border)' }}>
       <p className="text-2xl font-bold mb-2">No Results</p>
       <p className="text-sm" style={{ color: 'var(--muted)' }}>
@@ -203,7 +203,7 @@ const PasswordCard = ({
               </div>
 
               {!isEditing && (
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => togglePin(item.id)}
                     className="px-2 py-1.5 rounded-xl text-sm transition-all"
@@ -243,7 +243,7 @@ const PasswordCard = ({
                 style={{ background: 'var(--bg)', border: '1px solid var(--border)' }}>
                 <div>
                   <p className="text-[9px] uppercase tracking-[0.2em] mb-0.5" style={{ color: 'var(--muted)' }}>Username</p>
-                  <p className="text-sm font-medium truncate max-w-[160px]">{preview.username || '—'}</p>
+                  <p className="text-sm font-medium truncate max-w-[120px] sm:max-w-[160px]">{preview.username || '—'}</p>
                 </div>
                 {!isEditing && (
                   <button

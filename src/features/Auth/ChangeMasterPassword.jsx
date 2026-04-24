@@ -36,10 +36,10 @@ export const ChangeMasterPassword = ({ onConfirm, onCancel, onToast }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
       <form
         onSubmit={handleSubmit}
-        className="animate-scale-in rounded-3xl p-8 w-full max-w-md"
+        className="animate-scale-in rounded-3xl p-6 sm:p-8 w-full max-w-md"
         style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
       >
         <h2 className="text-xl font-bold mb-1">Change Master Password</h2>

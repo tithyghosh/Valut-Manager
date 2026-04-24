@@ -109,7 +109,7 @@ const AuthGate = ({ onUnlock }) => {
         />
 
         <div
-          className="glass-bright rounded-3xl p-8 shadow-2xl"
+          className="glass-bright rounded-3xl p-6 sm:p-8 shadow-2xl"
           style={{ boxShadow: '0 0 60px #00e5a010, 0 32px 64px #00000060' }}
         >
           {/* Lock icon */}
@@ -124,7 +124,7 @@ const AuthGate = ({ onUnlock }) => {
 
           {/* Heading */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
               {isFirstTime ? 'Create Your Vault' : 'Unlock Vault'}
             </h1>
             <p className="text-sm" style={{ color: 'var(--muted)' }}>
