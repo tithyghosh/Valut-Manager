@@ -1,232 +1,233 @@
 import React, { useState } from 'react'
 import { categories, initialFormData } from '../utils/bookmarkForm'
+import { generatePassword, getPasswordStrength } from '../utils/passwordUtils'
+
+const Field = ({ label, hint, error, children }) => (
+  <label
+    className="group flex flex-col gap-2.5 rounded-2xl p-5 cursor-text transition-all duration-200"
+    style={{ background: 'var(--surface)', border: `1px solid ${error ? '#ff4d6a60' : 'var(--border)'}` }}
+  >
+    <span className="text-[10px] font-semibold uppercase tracking-[0.25em]" style={{ color: 'var(--muted)' }}>
+      {label}
+    </span>
+    {children}
+    {error
+      ? <span className="text-xs" style={{ color: '#ff4d6a' }}>{error}</span>
+      : hint
+        ? <span className="text-xs" style={{ color: 'var(--muted)' }}>{hint}</span>
+        : null}
+  </label>
+)
+
+const inputCls = "w-full bg-transparent text-base text-white placeholder:opacity-30 focus:outline-none"
 
 const Form = ({ onAddBookmark }) => {
   const [formData, setFormData] = useState(initialFormData)
   const [errors, setErrors] = useState({})
+
   const handleChange = (e) => {
     const { name, value } = e.target
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }))
   }
 
-  const resetForm = () => {
-    setFormData(initialFormData)
-  }
   const validate = () => {
-    const newErrors = {}
-    if (!formData.name.trim() && !formData.website.trim()){
-      newErrors.name = 'Enter at least a name or url';
-    }
-    if (!formData.username.trim()){
-      newErrors.username = 'Username is required';
-    } 
-    if (!formData.password.trim()){
-      newErrors.password = 'Password is required'
-    } 
-    else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters'
-    }
-    return newErrors
+    const e = {}
+    if (!formData.name.trim() && !formData.website.trim()) e.name = 'Enter at least a name or URL'
+    if (!formData.username.trim()) e.username = 'Username is required'
+    if (!formData.password.trim()) e.password = 'Password is required'
+    else if (formData.password.length < 6) e.password = 'Password must be at least 6 characters'
+    return e
   }
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    const foundErrors = validate () 
-    if(Object.keys(foundErrors).length > 0){
-      setErrors(foundErrors);
-      return
-    }
+    const found = validate()
+    if (Object.keys(found).length > 0) { setErrors(found); return }
     setErrors({})
     onAddBookmark(formData)
-    resetForm()
+    setFormData(initialFormData)
   }
 
-  const handleClear = () => {
-    resetForm()
-  }
+  const strength = getPasswordStrength(formData.password)
 
   return (
-    <div className="max-w-7xl mx-auto mt-8 px-4">
+    <div className="max-w-7xl mx-auto mt-8 px-4 sm:px-6 animate-fade-up delay-200">
       <form
         onSubmit={handleSubmit}
-        className="mb-10 rounded-2xl border border-neutral-800 bg-linear-to-br from-neutral-900/70 to-neutral-800/40 p-8 shadow-2xl shadow-black/40 backdrop-blur"
+        className="rounded-3xl p-8 shadow-2xl"
+        style={{
+          background: 'linear-gradient(135deg, #0e0f1a 0%, #0a0b14 100%)',
+          border: '1px solid var(--border)',
+          boxShadow: '0 32px 64px #00000050',
+        }}
       >
-        <div className="mb-8 flex flex-col gap-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-400">
-            New bookmark
+        {/* Heading */}
+        <div className="mb-8 pl-5 accent-line">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] mb-2" style={{ color: 'var(--teal)' }}>
+            New Entry
           </p>
-          <h2 className="text-2xl font-semibold">
-            Store website credentials safely
-          </h2>
-          <p className="text-sm text-neutral-400">
-            Fill the details below. Your brand color helps us render a matching
-            favicon.
+          <h2 className="text-2xl font-bold">Store credentials securely</h2>
+          <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
+            Everything is encrypted with AES-256 before saving.
           </p>
         </div>
 
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-            <label className="flex flex-col gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                Website Name
-              </span>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Facebook"
-                className="w-full bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none"
-              />
-            {errors.name || (
-              <span className='text-xs text-red-600'>{errors.name}</span>
-            )}
-            </label>
+        {/* Row 1 — name, url, color, category */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 mb-4">
+          <Field label="Website Name" error={errors.name}>
+            <input
+              type="text" name="name" value={formData.name}
+              onChange={handleChange} placeholder="e.g. GitHub"
+              className={inputCls}
+            />
+          </Field>
 
-            <label className="flex flex-col gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                Website URL
-              </span>
-              <input
-                type="url"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-                placeholder="https://example.com"
-                className="w-full bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none"
-              />
-              <span className="text-xs text-neutral-500">
-                Include https:// for best results.
-              </span>
-              {errors.website && (
-              <span className='text-xs text-red-600'>{errors.name}</span>
-            )}
-            </label>
+          <Field label="Website URL" hint="Include https://">
+            <input
+              type="url" name="website" value={formData.website}
+              onChange={handleChange} placeholder="https://example.com"
+              className={inputCls}
+            />
+          </Field>
 
-            <div className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                    Favicon color
-                  </p>
-                  <p className="text-xs text-neutral-500">
-                    Select the accent color we should render.
-                  </p>
-                </div>
-                <input
-                  type="color"
-                  name="color"
-                  value={formData.color}
-                  onChange={handleChange}
-                  className="h-12 w-12 cursor-pointer rounded-full border border-neutral-700 bg-neutral-800 p-1 shadow-inner shadow-black/50"
-                />
+          {/* Color picker */}
+          <div
+            className="rounded-2xl p-5 transition-all duration-200"
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.25em]" style={{ color: 'var(--muted)' }}>
+                  Brand Color
+                </p>
+                <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>Favicon accent</p>
               </div>
-              <div className="mt-5 flex items-center gap-3 text-xs text-neutral-500">
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-700 bg-neutral-800/80 text-[10px] font-semibold uppercase text-neutral-400">
-                  HEX
+              <input
+                type="color" name="color" value={formData.color}
+                onChange={handleChange}
+                className="h-10 w-10 cursor-pointer rounded-xl border-0 bg-transparent p-0.5"
+              />
+            </div>
+            <div
+              className="h-1 rounded-full mt-3"
+              style={{ background: `linear-gradient(90deg, ${formData.color}40, ${formData.color})` }}
+            />
+          </div>
+
+          <Field label="Category" hint="Helps you filter later">
+            <select name="category" value={formData.category} onChange={handleChange}
+              className="w-full bg-transparent text-base text-white outline-none">
+              <option value="" className="bg-[#0e0f1a]">Select category</option>
+              {categories.map((c) => (
+                <option key={c} value={c} className="bg-[#0e0f1a]">{c}</option>
+              ))}
+            </select>
+          </Field>
+        </div>
+
+        {/* Row 2 — username, password */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 mb-4">
+          <Field label="Username" hint="Email or handle" error={errors.username}>
+            <input
+              type="text" name="username" value={formData.username}
+              onChange={handleChange} placeholder="user@example.com"
+              className={inputCls}
+            />
+          </Field>
+
+          <div className="flex flex-col gap-2">
+            {/* Password label row with Generate button */}
+            <div
+              className="flex flex-col gap-2.5 rounded-2xl p-5 transition-all duration-200"
+              style={{ background: 'var(--surface)', border: `1px solid ${errors.password ? '#ff4d6a60' : 'var(--border)'}` }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.25em]" style={{ color: 'var(--muted)' }}>
+                  Password
                 </span>
-                <span>Matches any brand primary color.</span>
+                <button
+                  type="button"
+                  onClick={() => setFormData((prev) => ({ ...prev, password: generatePassword() }))}
+                  className="text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors duration-200"
+                  style={{ color: 'var(--teal)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+                  onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                >
+                  Generate
+                </button>
               </div>
+              <input
+                type="password" name="password" value={formData.password}
+                onChange={handleChange} placeholder="Enter password"
+                className={`${inputCls} font-mono tracking-widest`}
+                autoComplete="new-password"
+              />
+              {errors.password && (
+                <span className="text-xs" style={{ color: '#ff4d6a' }}>{errors.password}</span>
+              )}
             </div>
 
-            <label className="flex flex-col gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                Category
-              </span>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full bg-transparent text-base text-white outline-none"
-              >
-                <option value="" className="bg-neutral-900 text-white">
-                  Select category
-                </option>
-                {categories.map((category) => (
-                  <option
-                    key={category}
-                    value={category}
-                    className="bg-neutral-900 text-white"
-                  >
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <span className="text-xs text-neutral-500">
-                Helps you filter quicker later.
-              </span>
-            </label>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <label className="flex flex-col gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                Username
-              </span>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Enter username"
-                className="w-full bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none"
-              />
-              <span className="text-xs text-neutral-500">
-                Use workspace or personal handle.
-              </span>
-              {errors.username && (
-              <span className='text-xs text-red-600'>{errors.username}</span>
+            {/* Strength bar */}
+            {formData.password && (
+              <div className="px-1">
+                <div className="flex gap-1 mb-1">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div
+                      key={i}
+                      className="h-1 flex-1 rounded-full transition-all duration-300"
+                      style={{ background: i <= strength.score ? strength.color : 'var(--border)' }}
+                    />
+                  ))}
+                </div>
+                <p className="text-[10px]" style={{ color: strength.color }}>
+                  {strength.label}
+                </p>
+              </div>
             )}
-            </label>
-
-            <label className="flex flex-col gap-3 rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 text-sm transition focus-within:border-blue-500 focus-within:bg-neutral-900 focus-within:shadow-lg focus-within:shadow-blue-500/10">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                Password
-              </span>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter password"
-                className="w-full bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none"
-              />
-              <span className="text-xs text-neutral-500">
-                Choose at least 6 characters.
-              </span>
-              {errors.password && (
-              <span className='text-xs text-red-600'>{errors.password}</span>
-            )}
-            </label>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="text-xs text-neutral-500">
-            By submitting you confirm the entry is safe to store.
-          </div>
-          <div className="flex flex-1 justify-end gap-3">
-            <button
-              type="reset"
-              onClick={handleClear}
-              className="w-full rounded-full border border-neutral-700 px-6 py-3 text-sm font-semibold text-neutral-200 transition hover:border-neutral-500 hover:text-white md:w-auto"
-            >
-              Clear
-            </button>
-            <button
-              type="submit"
-              className="w-full rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 md:w-auto"
-            >
-              Add Bookmark
-            </button>
-          </div>
+        {/* Row 3 — notes (full width) */}
+        <div className="mb-8">
+          <Field
+            label={<>Notes <span style={{ color: 'var(--border-bright)' }}>(optional)</span></>}
+            hint="Stored encrypted alongside your credentials."
+          >
+            <textarea
+              name="notes" value={formData.notes} onChange={handleChange}
+              placeholder="2FA backup codes, security questions, hints..."
+              rows={3}
+              className={`${inputCls} resize-none`}
+            />
+          </Field>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
+          <button
+            type="reset"
+            onClick={() => setFormData(initialFormData)}
+            className="px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200 hover:scale-105"
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--muted)' }}
+          >
+            Clear
+          </button>
+          <button
+            type="submit"
+            className="px-8 py-3 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 hover:shadow-lg"
+            style={{
+              background: 'linear-gradient(135deg, #00e5a0, #00b87a)',
+              color: '#07080f',
+              boxShadow: '0 8px 32px #00e5a025',
+            }}
+          >
+            + Add Credential
+          </button>
         </div>
       </form>
     </div>
   )
 }
 
-export default Form;
+export default Form

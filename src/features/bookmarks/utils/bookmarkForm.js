@@ -16,4 +16,5 @@ export const initialFormData = {
   category: '',
   username: '',
   password: '',
+  notes: '',
 }

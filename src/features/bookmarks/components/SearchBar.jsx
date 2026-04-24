@@ -2,175 +2,131 @@ import React, { useEffect, useRef, useState } from 'react'
 import { sortChoices } from '../utils/bookmarkQuery'
 import { categories } from '../utils/bookmarkForm'
 
-const SearchBar = ({
-  searchTerm,
-  onSearchChange,
-  categoryFilter,
-  onCategoryChange,
-  sortOrder,
-  onSortChange,
-}) => {
-  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
-  const sortMenuRef = useRef(null)
-  const activeSort =
-    sortChoices.find((choice) => choice.value === sortOrder) || sortChoices[0]
+const categoryColors = {
+  Social: '#4d9fff', Video: '#ff6b6b', Design: '#c084fc', Streaming: '#f97316',
+  Productivity: '#00e5a0', Entertainment: '#f43f5e', Shopping: '#fbbf24', Music: '#a78bfa',
+}
+
+const SearchBar = ({ searchTerm, onSearchChange, categoryFilter, onCategoryChange, sortOrder, onSortChange }) => {
+  const [isSortOpen, setIsSortOpen] = useState(false)
+  const sortRef = useRef(null)
+  const activeSort = sortChoices.find((c) => c.value === sortOrder) || sortChoices[0]
 
   useEffect(() => {
-    const handlePointerDown = (event) => {
-      if (
-        sortMenuRef.current &&
-        !sortMenuRef.current.contains(event.target)
-      ) {
-        setIsSortMenuOpen(false)
-      }
+    const handler = (e) => {
+      if (sortRef.current && !sortRef.current.contains(e.target)) setIsSortOpen(false)
     }
-
-    document.addEventListener('mousedown', handlePointerDown)
-
-    return () => {
-      document.removeEventListener('mousedown', handlePointerDown)
-    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
   }, [])
+
+  const sortLabel = {
+    'date-desc': 'Newest',
+    'date-asc':  'Oldest',
+    'name-asc':  'A–Z',
+    'name-desc': 'Z–A',
+  }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-        <label className="relative flex-1">
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
-          </span>
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+        {/* Search input */}
+        <div className="relative flex-1">
+          <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: 'var(--muted)' }}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           <input
-            type="text"
-            value={searchTerm}
+            type="text" value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search by name or URL"
-            className="w-full rounded-2xl border border-neutral-800 bg-neutral-950/60 py-3 pl-11 pr-4 text-sm text-white placeholder:text-neutral-500 transition focus:border-blue-500 focus:bg-neutral-950 focus:outline-none"
+            placeholder="Search credentials..."
+            className="w-full rounded-2xl py-3.5 pl-11 pr-4 text-sm text-white outline-none transition-all duration-200"
+            style={{
+              background: 'var(--bg)',
+              border: `1px solid ${searchTerm ? 'var(--teal)' : 'var(--border)'}`,
+              boxShadow: searchTerm ? '0 0 0 3px #00e5a012' : 'none',
+            }}
           />
-        </label>
+          {searchTerm && (
+            <button onClick={() => onSearchChange('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-xs"
+              style={{ color: 'var(--muted)' }}>✕</button>
+          )}
+        </div>
 
-        <div ref={sortMenuRef} className="relative flex flex-wrap gap-2">
+        {/* Sort dropdown */}
+        <div ref={sortRef} className="relative">
           <button
-            type="button"
-            onClick={() => setIsSortMenuOpen((prev) => !prev)}
-            aria-expanded={isSortMenuOpen}
-            aria-haspopup="menu"
-            className="inline-flex items-center gap-2 rounded-2xl border border-neutral-800/80 bg-neutral-900/80 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-neutral-300 transition hover:border-blue-500 hover:text-white"
+            onClick={() => setIsSortOpen((p) => !p)}
+            className="inline-flex items-center gap-2 rounded-2xl px-4 py-3.5 text-xs font-semibold transition-all duration-200"
+            style={{
+              background: 'var(--bg)',
+              border: `1px solid ${isSortOpen ? 'var(--teal)' : 'var(--border)'}`,
+              color: 'var(--text)',
+            }}
           >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 4h18l-8 8v6l-4 4v-8z"
-              ></path>
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" />
             </svg>
-            Sort by
-            <span className="rounded-full bg-neutral-800 px-2 py-1 text-[10px] tracking-[0.2em] text-neutral-400">
-              {activeSort.value === 'date-desc' && 'Newest'}
-              {activeSort.value === 'date-asc' && 'Oldest'}
-              {activeSort.value === 'name-asc' && 'A-Z'}
-              {activeSort.value === 'name-desc' && 'Z-A'}
-            </span>
-            <svg
-              className={`h-4 w-4 transition ${isSortMenuOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 9l-7 7-7-7"
-              ></path>
+            <span style={{ color: 'var(--muted)' }}>Sort:</span>
+            <span style={{ color: 'var(--teal)' }}>{sortLabel[activeSort.value] ?? activeSort.label}</span>
+            <svg className={`h-3.5 w-3.5 transition-transform ${isSortOpen ? 'rotate-180' : ''}`}
+              style={{ color: 'var(--muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
-          {isSortMenuOpen && (
-            <div className="absolute right-0 top-full z-20 mt-3 w-72 rounded-3xl border border-neutral-800 bg-neutral-950/95 p-3 shadow-2xl shadow-black/40 backdrop-blur">
-              <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-neutral-500">
-                Sort Order
-              </p>
-
-              <div className="mt-3 space-y-2">
-                {sortChoices.map((choice) => {
-                  const isActive = choice.value === sortOrder;
-
-                  return (
-                    <button
-                      key={choice.value}
-                      type="button"
-                      onClick={() => {
-                        onSortChange(choice.value)
-                        setIsSortMenuOpen(false)
-                      }}
-                      className={`flex w-full items-start justify-between rounded-2xl border px-4 py-3 text-left transition ${
-                        isActive
-                          ? 'border-blue-500/70 bg-blue-500/10 text-white'
-                          : 'border-neutral-800 bg-neutral-900/70 text-neutral-300 hover:border-blue-500/40 hover:text-white'
-                      }`}
-                    >
-                      <span className="text-sm font-semibold">{choice.label}</span>
-                      <span className="ml-4 max-w-[9rem] text-right text-[11px] uppercase tracking-[0.18em] text-neutral-500">
-                        {choice.hint}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+          {isSortOpen && (
+            <div className="animate-scale-in absolute right-0 top-full mt-2 z-20 w-64 rounded-2xl p-2"
+              style={{ background: '#0e0f1a', border: '1px solid var(--border)', boxShadow: '0 20px 60px #00000080' }}>
+              {sortChoices.map((choice) => (
+                <button key={choice.value}
+                  onClick={() => { onSortChange(choice.value); setIsSortOpen(false) }}
+                  className="flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-left text-sm transition-all"
+                  style={{
+                    background: choice.value === sortOrder ? '#00e5a010' : 'transparent',
+                    color: choice.value === sortOrder ? 'var(--teal)' : 'var(--text)',
+                  }}
+                >
+                  <span className="font-medium">{choice.label}</span>
+                  {choice.value === sortOrder && <span>✓</span>}
+                </button>
+              ))}
             </div>
           )}
         </div>
       </div>
 
+      {/* Category filters */}
       <div className="flex flex-wrap gap-2">
         <button
-          type="button"
           onClick={() => onCategoryChange('')}
-          className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition ${
-            categoryFilter === ''
-              ? 'border-blue-600 bg-blue-600 text-white'
-              : 'border-neutral-700 text-neutral-400 hover:border-neutral-500 hover:text-white'
-          }`}
-        >
-          All
-        </button>
-        {categories.map((category) => (
-          <button
-            key={category}
-            type="button"
-            onClick={() => onCategoryChange(category === categoryFilter ? '' : category)}
-            className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition ${
-              categoryFilter === category
-                ? 'border-blue-600 bg-blue-600 text-white'
-                : 'border-neutral-700 text-neutral-400 hover:border-neutral-500 hover:text-white'
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
+          className="rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-200"
+          style={{
+            background: categoryFilter === '' ? 'var(--teal)' : 'var(--surface)',
+            border: `1px solid ${categoryFilter === '' ? 'var(--teal)' : 'var(--border)'}`,
+            color: categoryFilter === '' ? '#07080f' : 'var(--muted)',
+          }}
+        >All</button>
 
-      <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">
-        Find cards instantly by website name, URL, or category. Sorted by {activeSort.label}
-      </p>
+        {categories.map((cat) => {
+          const color = categoryColors[cat] || 'var(--teal)'
+          const active = categoryFilter === cat
+          return (
+            <button key={cat}
+              onClick={() => onCategoryChange(cat === categoryFilter ? '' : cat)}
+              className="rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-200"
+              style={{
+                background: active ? `${color}20` : 'var(--surface)',
+                border: `1px solid ${active ? color : 'var(--border)'}`,
+                color: active ? color : 'var(--muted)',
+              }}
+            >{cat}</button>
+          )
+        })}
+      </div>
     </div>
   )
 }
